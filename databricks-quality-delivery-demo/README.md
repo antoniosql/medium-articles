@@ -188,10 +188,3 @@ The **Databricks layer** is meant to show what the same architecture looks like 
 - The original uploaded article is no longer available in the live file-search context, so this repo is built from the sequel architecture and current Databricks documentation rather than by re-reading the expired attachment.
 - The Databricks files are intentionally conservative and close to the official docs so they are easy to adapt.
 
-## References
-
-Databricks currently documents that:
-
-- Declarative Automation Bundles are the recommended path for CI/CD and pipeline deployment. citeturn924914search0turn924914search3
-- Expectation decorators such as `@dp.expect_all_or_drop(...)` apply data quality constraints to tables and views in pipelines. citeturn436684view0turn436684view1
-- Production targets can validate the Git branch and are best protected with service principals through `run_as`. citeturn436684view3turn924914search2
