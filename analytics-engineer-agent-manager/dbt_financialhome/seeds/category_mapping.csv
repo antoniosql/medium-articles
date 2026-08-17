@@ -1,0 +1,12 @@
+raw_category,canonical_category,essential_flag,category_owner
+Rent,Housing,true,Finance Analytics
+Electricity,Utilities,true,Finance Analytics
+Water,Utilities,true,Finance Analytics
+Internet,Telecommunications,true,Finance Analytics
+Mobile,Telecommunications,true,Finance Analytics
+Supermarket,Groceries,true,Finance Analytics
+Restaurant,Dining,false,Finance Analytics
+Insurance,Insurance,true,Finance Analytics
+Transport,Transport,true,Finance Analytics
+Salary,Income,false,Finance Analytics
+Transfer,Transfer,false,Finance Analytics

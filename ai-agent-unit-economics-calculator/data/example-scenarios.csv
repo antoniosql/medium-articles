@@ -1,0 +1,16 @@
+Metric,Units,Token Saver,High Accuracy Heavy Review,Outcome Optimized
+End-to-end success rate,%,0.75,0.93,0.96
+Autonomous success rate,%,0.45,0.35,0.72
+Human minutes per assisted success,minutes,8,7,5
+QA sample rate on autonomous outcomes,%,0.1,0.6,0.15
+QA minutes per sampled outcome,minutes,2,3,2
+Rework rate,%,0.25,0.18,0.07
+Rework minutes per task,minutes,10,8,6
+Manual fallback minutes per failed task,minutes,15,15,12
+Average agent runs per task,runs/task,1.2,1.9,1.5
+Inference cost per agent run,EUR/run,0.04,0.18,0.1
+Tool and API cost per task,EUR/task,0.03,0.06,0.04
+Telemetry and evaluation cost per task,EUR/task,0.01,0.04,0.025
+Fixed platform cost,EUR/month,700,900,850
+Operations and maintenance,EUR/month,1000,1400,1100
+Amortized development and change cost,EUR/month,600,700,650

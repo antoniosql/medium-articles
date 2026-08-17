@@ -1,0 +1,36 @@
+version: 1
+agent_role: analytics_engineering_change_agent
+
+autonomous_actions:
+  - Read repository files and generated dbt metadata
+  - Produce a change plan
+  - Edit files on an isolated non-protected branch
+  - Run local dbt compile, seed, build, and test commands
+  - Execute approved business evaluation queries
+  - Repair technical errors without changing approved business semantics
+  - Generate documentation and evidence reports
+
+human_approval_required:
+  - Change a metric definition, grain, join rule, or accepted category mapping
+  - Add or remove a source
+  - Remove, skip, or weaken a test
+  - Accept a failed reconciliation or evaluation
+  - Access a protected environment
+  - Merge to the main branch
+  - Deploy to production
+
+prohibited_actions:
+  - Read, reveal, or commit secrets
+  - Connect to production systems
+  - Bypass a quality gate or branch-protection rule
+  - Fabricate a source field or business definition
+  - Drop failing records without an approved rule
+  - Change this decision-rights file as part of the delegated task
+  - Claim success without executable evidence
+
+stop_conditions:
+  - A blocking quality gate fails
+  - Required context is missing or contradictory
+  - The requested change exceeds the approved source scope
+  - A business-definition change is necessary
+  - The next action requires protected-environment access

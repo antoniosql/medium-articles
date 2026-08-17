@@ -1,0 +1,17 @@
+{
+  "dev": {
+    "catalog": "main",
+    "governance_schema": "governance",
+    "observability_schema": "observability"
+  },
+  "test": {
+    "catalog": "main_test",
+    "governance_schema": "governance",
+    "observability_schema": "observability"
+  },
+  "prod": {
+    "catalog": "main_prod",
+    "governance_schema": "governance",
+    "observability_schema": "observability"
+  }
+}

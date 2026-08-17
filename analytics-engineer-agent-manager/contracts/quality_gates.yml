@@ -1,0 +1,59 @@
+version: 1
+
+gates:
+  - id: GATE-01
+    name: Context completeness
+    stage: before_plan
+    blocking: true
+    evidence:
+      - intent contract validates
+      - decision rights validate
+      - evaluation cases reference the approved output model
+
+  - id: GATE-02
+    name: Plan before write
+    stage: before_build
+    blocking: true
+    evidence:
+      - plan lists assumptions
+      - plan lists expected files
+      - plan identifies approval-gated actions
+
+  - id: GATE-03
+    name: dbt build
+    stage: automated_validation
+    blocking: true
+    command: dbt build
+    evidence:
+      - seeds loaded
+      - models created
+      - generic tests passed
+      - singular tests passed
+
+  - id: GATE-04
+    name: Business evaluations
+    stage: automated_validation
+    blocking: true
+    evidence:
+      - all evaluation cases pass within their tolerance
+      - published spend reconciles to source expenses
+      - income is excluded
+
+  - id: GATE-05
+    name: Human review
+    stage: before_merge
+    blocking: true
+    evidence:
+      - reviewer confirms business semantics
+      - reviewer confirms changed-file scope
+      - reviewer accepts residual risk
+
+warning_policy:
+  treat_as_blocking:
+    - unmapped expense category
+    - failed reconciliation
+    - missing model description
+    - missing owner
+  informational:
+    - unused source column
+    - non-blocking formatting issue

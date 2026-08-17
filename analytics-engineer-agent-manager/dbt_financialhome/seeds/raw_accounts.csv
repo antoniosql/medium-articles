@@ -1,0 +1,4 @@
+account_id,account_name,account_type,active_flag
+A001,Household Current Account,checking,true
+A002,Household Credit Card,credit_card,true
+A003,Emergency Savings,savings,true

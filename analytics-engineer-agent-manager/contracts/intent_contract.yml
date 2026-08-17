@@ -1,0 +1,77 @@
+version: 1
+change_id: FH-001
+title: Build a governed monthly-spend data product
+owner: Finance Analytics
+status: approved_for_development
+
+business_question: >-
+  How much did FinancialHome spend by month and approved category, how does
+  actual spend compare with the category budget, and which categories are over budget?
+
+business_outcome:
+  primary_user: Household finance reviewer
+  decision_supported: Prioritize categories that require budget review
+  refresh_expectation: Monthly
+
+source_scope:
+  allowed_sources:
+    - raw_transactions
+    - raw_accounts
+    - category_mapping
+    - budget_targets
+  prohibited_sources:
+    - external bank APIs
+    - production finance systems
+    - unapproved spreadsheets
+
+required_grain:
+  model: fct_monthly_spend
+  columns:
+    - month_start
+    - canonical_category
+
+required_measures:
+  - name: actual_spend_eur
+    definition: Sum of positive normalized expense spend for the month and category
+  - name: budget_eur
+    definition: Approved budget for the month and category
+  - name: variance_eur
+    definition: actual_spend_eur minus budget_eur
+  - name: variance_pct
+    definition: variance_eur divided by budget_eur multiplied by 100
+
+business_rules:
+  - Expenses are rows where transaction_type equals expense
+  - Source expense amounts are negative and published spend is positive
+  - Income and transfers are excluded from spend
+  - Monthly attribution uses transaction_date
+  - Every expense category must have an explicit approved mapping
+  - Positive variance means over budget
+  - Aggregate published spend must reconcile to source expenses within EUR 0.01
+
+deliverables:
+  - Staging models for approved sources
+  - Enriched transaction model with approved category mapping
+  - Monthly spend fact table
+  - Model and column documentation
+  - Automated data tests
+  - Business-level evaluation evidence
+
+acceptance_criteria:
+  - id: AC-01
+    statement: Normal-scenario dbt build passes
+  - id: AC-02
+    statement: All business evaluation cases pass
+  - id: AC-03
+    statement: Unmapped expense categories fail a blocking quality gate
+  - id: AC-04
+    statement: No income is included in actual_spend_eur
+  - id: AC-05
+    statement: The agent stops before merge or deployment
+
+out_of_scope:
+  - Dashboard design
+  - Forecasting
+  - Automatic recategorization with an LLM
+  - Production deployment
+  - Changes to approved category definitions

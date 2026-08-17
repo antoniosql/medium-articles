@@ -1,0 +1,31 @@
+transaction_id,transaction_date,account_id,merchant,raw_category,amount_eur,transaction_type
+T001,2026-01-01,A001,Landlord,Rent,-1200.00,expense
+T002,2026-01-05,A001,PowerCo,Electricity,-90.00,expense
+T003,2026-01-07,A001,WaterCo,Water,-30.00,expense
+T004,2026-01-09,A001,FiberNet,Internet,-50.00,expense
+T005,2026-01-10,A002,MobileTel,Mobile,-35.00,expense
+T006,2026-01-12,A002,Market One,Supermarket,-320.00,expense
+T007,2026-01-18,A002,Bistro Central,Restaurant,-120.00,expense
+T008,2026-01-22,A002,Metro and Fuel,Transport,-80.00,expense
+T009,2026-01-28,A001,Employer,Salary,3200.00,income
+T010,2026-02-01,A001,Landlord,Rent,-1200.00,expense
+T011,2026-02-05,A001,PowerCo,Electricity,-120.00,expense
+T012,2026-02-07,A001,WaterCo,Water,-32.00,expense
+T013,2026-02-09,A001,FiberNet,Internet,-50.00,expense
+T014,2026-02-10,A002,MobileTel,Mobile,-35.00,expense
+T015,2026-02-12,A002,Market One,Supermarket,-410.00,expense
+T016,2026-02-18,A002,Bistro Central,Restaurant,-210.00,expense
+T017,2026-02-20,A001,SafeHome,Insurance,-140.00,expense
+T018,2026-02-22,A002,Metro and Fuel,Transport,-95.00,expense
+T019,2026-02-28,A001,Employer,Salary,3200.00,income
+T020,2026-03-01,A001,Landlord,Rent,-1200.00,expense
+T021,2026-03-05,A001,PowerCo,Electricity,-95.00,expense
+T022,2026-03-07,A001,WaterCo,Water,-31.00,expense
+T023,2026-03-09,A001,FiberNet,Internet,-50.00,expense
+T024,2026-03-10,A002,MobileTel,Mobile,-35.00,expense
+T025,2026-03-12,A002,Market One,Supermarket,-460.00,expense
+T026,2026-03-18,A002,Bistro Central,Restaurant,-290.00,expense
+T027,2026-03-20,A001,SafeHome Annual,Insurance,-420.00,expense
+T028,2026-03-22,A002,Metro and Fuel,Transport,-160.00,expense
+T029,2026-03-28,A001,Employer,Salary,3200.00,income
+T030,2026-03-29,A001,Internal Transfer,Transfer,-500.00,transfer

@@ -1,0 +1,11 @@
+transaction_id,transaction_date,account_id,merchant,raw_category,amount_eur,transaction_type
+T001,2026-01-01,A001,Landlord,Rent,-1200.00,expense
+T002,2026-01-05,A001,PowerCo,Electricity,-90.00,expense
+T003,2026-01-07,A001,WaterCo,Water,-30.00,expense
+T004,2026-01-09,A001,FiberNet,Internet,-50.00,expense
+T005,2026-01-10,A002,MobileTel,Mobile,-35.00,expense
+T006,2026-01-12,A002,Market One,Supermarket,-320.00,expense
+T007,2026-01-18,A002,Bistro Central,Restaurant,-120.00,expense
+T008,2026-01-22,A002,Metro and Fuel,Transport,-80.00,expense
+T009,2026-01-28,A001,Employer,Salary,3200.00,income
+T_BAD,2026-01-25,A002,Unknown Digital Service,Experimental Subscription,-19.99,expense

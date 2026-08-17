@@ -1,0 +1,21 @@
+# Example application configuration for local development and documentation.
+# Replace values with your own environment-specific configuration.
+
+platform:
+  catalog: main
+  governance_schema: governance
+  observability_schema: observability
+  bronze_schema: bronze
+  silver_schema: silver
+  gold_schema: gold
+
+quality:
+  rules_table: main.governance.quality_rules
+  customers_warn_tag: customers_silver_warn
+  customers_drop_tag: customers_silver_drop
+  customers_fail_tag: customers_gold_fail
+
+observability:
+  event_log_catalog: main
+  event_log_schema: observability
+  event_log_name: customers_event_log

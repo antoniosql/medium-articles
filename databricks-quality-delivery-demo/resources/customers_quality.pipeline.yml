@@ -1,0 +1,11 @@
+resources:
+  pipelines:
+    customers_quality:
+      name: customers-quality
+      development: true
+      catalog: ${var.catalog}
+      target: ${var.schema}
+      serverless: true
+      libraries:
+        - file:
+            path: ../src/databricks_pipeline/pipeline.py

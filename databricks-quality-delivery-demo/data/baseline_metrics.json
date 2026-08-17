@@ -1,0 +1,8 @@
+{
+  "max_dropped_rows": 3,
+  "max_failed_records_per_expectation": {
+    "customer_id_not_null": 1,
+    "email_has_at": 1,
+    "country_allowed": 1
+  }
+}

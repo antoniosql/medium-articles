@@ -1,0 +1,13 @@
+rules:
+  - name: customer_id_not_null
+    tag: silver_hygiene
+    constraint: customer_id.not_null
+    description: Customer ID must not be null
+  - name: email_has_at
+    tag: silver_hygiene
+    constraint: email.contains:@
+    description: Email must contain @
+  - name: country_allowed
+    tag: silver_hygiene
+    constraint: country.in:ES,PT,FR
+    description: Country must be ES, PT or FR

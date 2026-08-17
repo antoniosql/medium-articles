@@ -1,0 +1,57 @@
+version: 1
+output_model: fct_monthly_spend
+
+cases:
+  - id: EVAL-001
+    name: January total spend excludes income
+    query: >-
+      select round(sum(actual_spend_eur), 2) as result
+      from main.fct_monthly_spend
+      where month_start = date '2026-01-01'
+    expected: 1925.00
+    tolerance: 0.01
+
+  - id: EVAL-002
+    name: February total spend is correct
+    query: >-
+      select round(sum(actual_spend_eur), 2) as result
+      from main.fct_monthly_spend
+      where month_start = date '2026-02-01'
+    expected: 2292.00
+    tolerance: 0.01
+
+  - id: EVAL-003
+    name: March insurance is over budget by EUR 270
+    query: >-
+      select round(variance_eur, 2) as result
+      from main.fct_monthly_spend
+      where month_start = date '2026-03-01'
+        and canonical_category = 'Insurance'
+    expected: 270.00
+    tolerance: 0.01
+
+  - id: EVAL-004
+    name: January telecommunications spend is EUR 85
+    query: >-
+      select round(actual_spend_eur, 2) as result
+      from main.fct_monthly_spend
+      where month_start = date '2026-01-01'
+        and canonical_category = 'Telecommunications'
+    expected: 85.00
+    tolerance: 0.01
+
+  - id: EVAL-005
+    name: All published spend reconciles to source expenses
+    query: >-
+      with source_total as (
+        select round(sum(abs(amount_eur)), 2) as value
+        from main.stg_transactions
+        where transaction_type = 'expense'
+      ), mart_total as (
+        select round(sum(actual_spend_eur), 2) as value
+        from main.fct_monthly_spend
+      )
+      select round(abs(source_total.value - mart_total.value), 2) as result
+      from source_total cross join mart_total
+    expected: 0.00
+    tolerance: 0.01

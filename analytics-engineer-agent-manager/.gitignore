@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+
+# Environment and secrets
+.env
+
+AGENTS.md
+
+# dbt
+dbt_financialhome/target/
+dbt_financialhome/logs/
+dbt_financialhome/dbt_packages/
+
+# Local data and reports
+.data/
+outputs/*.json
+outputs/*.md
+!outputs/.gitkeep
+!outputs/example_agent_run_report.md
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

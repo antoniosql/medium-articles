@@ -1,0 +1,81 @@
+version: 2
+
+models:
+  - name: stg_accounts
+    description: Cleaned account reference data for the FinancialHome demo.
+    columns:
+      - name: account_id
+        description: Stable account identifier.
+        data_tests:
+          - not_null
+          - unique
+      - name: account_type
+        description: Approved account classification.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['checking', 'credit_card', 'savings']
+
+  - name: stg_category_mapping
+    description: Approved mapping from source categories to canonical finance categories.
+    columns:
+      - name: raw_category
+        description: Category label received from the source transaction.
+        data_tests:
+          - not_null
+          - unique
+      - name: canonical_category
+        description: Approved reporting category.
+        data_tests:
+          - not_null
+      - name: category_owner
+        description: Team accountable for the mapping.
+        data_tests:
+          - not_null
+
+  - name: stg_budget_targets
+    description: Approved monthly budget by canonical category.
+    columns:
+      - name: month_start
+        description: First day of the budget month.
+        data_tests:
+          - not_null
+      - name: canonical_category
+        description: Approved category receiving the budget.
+        data_tests:
+          - not_null
+      - name: budget_eur
+        description: Approved budget in euros.
+        data_tests:
+          - not_null
+
+  - name: stg_transactions
+    description: Typed and normalized transaction rows selected by the active demo scenario.
+    columns:
+      - name: transaction_id
+        description: Stable transaction identifier.
+        data_tests:
+          - not_null
+          - unique
+      - name: transaction_date
+        description: Business date used for monthly attribution.
+        data_tests:
+          - not_null
+      - name: account_id
+        description: Account associated with the transaction.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
+      - name: transaction_type
+        description: Normalized type used to separate expense, income, and transfer rows.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['expense', 'income', 'transfer']
+      - name: spend_eur
+        description: Positive spend for expense rows and zero for all other transaction types.
+        data_tests:
+          - not_null

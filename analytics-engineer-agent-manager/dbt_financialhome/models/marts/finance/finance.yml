@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: dim_category
+    description: Canonical expense categories approved for FinancialHome reporting.
+    columns:
+      - name: canonical_category
+        description: Stable business-facing category name.
+        data_tests:
+          - not_null
+          - unique
+      - name: category_owner
+        description: Team accountable for the category definition.
+        data_tests:
+          - not_null
+
+  - name: fct_monthly_spend
+    description: >-
+      Monthly actual expense spend by approved category, compared with the approved
+      category budget. Positive variance means over budget.
+    columns:
+      - name: month_start
+        description: First day of the reporting month.
+        data_tests:
+          - not_null
+      - name: canonical_category
+        description: Approved reporting category.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_category')
+                field: canonical_category
+      - name: actual_spend_eur
+        description: Positive expense spend in euros. Income and transfers are excluded.
+        data_tests:
+          - not_null
+      - name: budget_eur
+        description: Approved monthly category budget in euros.
+        data_tests:
+          - not_null
+      - name: variance_eur
+        description: Actual spend minus budget. Positive values are over budget.
+        data_tests:
+          - not_null
+      - name: variance_pct
+        description: Variance as a percentage of budget; null where budget is zero.
+      - name: budget_status
+        description: Human-readable interpretation of actual spend versus budget.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['within_budget', 'over_budget', 'no_budget']

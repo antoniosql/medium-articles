@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: int_transactions_enriched
+    description: Transaction rows enriched with approved category and account context.
+    columns:
+      - name: transaction_id
+        description: Stable transaction identifier.
+        data_tests:
+          - not_null
+          - unique
+      - name: month_start
+        description: First day of the transaction month.
+        data_tests:
+          - not_null
+      - name: canonical_category
+        description: Approved reporting category. Expense rows must never be null.
+      - name: spend_eur
+        description: Positive amount used by spend measures.
+        data_tests:
+          - not_null
