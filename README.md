@@ -21,11 +21,4 @@ cd <project-folder>
 cat README.md
 ```
 
-## Source repositories
 
-These folders were consolidated from the following standalone repositories:
-
-- [antoniosql/databricks-dq-as-code](https://github.com/antoniosql/databricks-dq-as-code)
-- [antoniosql/databricks-quality-delivery-demo](https://github.com/antoniosql/databricks-quality-delivery-demo)
-- [antoniosql/analytics-engineer-agent-manager](https://github.com/antoniosql/analytics-engineer-agent-manager)
-- [antoniosql/ai-agent-unit-economics-calculator](https://github.com/antoniosql/ai-agent-unit-economics-calculator)
