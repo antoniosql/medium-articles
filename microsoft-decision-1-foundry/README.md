@@ -48,7 +48,7 @@ python -m pip install -e ".[dev]"
 ### 2. Run everything that needs no Azure
 
 ```bash
-python -m pytest -q                      # 34 tests against a local fake of the API
+python -m pytest -q                      # 36 tests against a local fake of the API
 decision-demo audit-labels               # the label-consistency numbers quoted in the article
 decision-demo triage --dry-run           # the exact triage request, without sending it
 decision-demo guardrails --dry-run       # the exact guardrail request, without sending it
@@ -76,13 +76,13 @@ You need an Azure subscription, the [Azure CLI](https://learn.microsoft.com/cli/
 ```bash
 # macOS / Linux
 bash infra/scripts/deploy.sh
-LOCATION=eastus2 DEPLOYMENT_SKU=DataZoneStandard bash infra/scripts/deploy.sh   # overrides
+LOCATION=spaincentral CAPACITY=100 bash infra/scripts/deploy.sh   # overrides
 ```
 
 ```powershell
 # Windows PowerShell
 ./infra/scripts/deploy.ps1
-./infra/scripts/deploy.ps1 -Location eastus2 -DeploymentSku DataZoneStandard
+./infra/scripts/deploy.ps1 -Location spaincentral -Capacity 100
 ```
 
 The script deploys [`infra/main.bicep`](infra/main.bicep), grants your user the **Cognitive Services User** role on the resource, and writes `.env` with the endpoint and deployment name. API keys are disabled; calls use Microsoft Entra ID. Role assignments can take a few minutes to propagate.
@@ -99,7 +99,12 @@ ACCOUNT_NAME=my-foundry RESOURCE_GROUP=my-rg bash infra/scripts/add-deployment.s
 
 **Option C: Foundry portal.** Model catalog → Microsoft-Decision-1 → Deploy. Then copy `.env.example` to `.env` and paste the endpoint and deployment name from the deployment page.
 
-> Pick a region where the model is offered. `GlobalStandard` is available broadly; `DataZoneStandard` keeps inference inside the data zone and is offered in selected regions. If the deployment fails on region, change `LOCATION` / `-Location`.
+> **SKU and capacity.** In October 2026 the model was offered only as `DataZoneStandard` in every region checked (Spain Central, Sweden Central, West Europe, France Central, Germany West Central, East US 2), so that is the default here; `GlobalStandard` is accepted where your region lists it. One capacity unit is **1 request and 1,000 tokens per minute**, so the default is 500 units (the Azure default). With 1 unit the triage run spends its time in 429 retries. Check what your region offers and your quota with:
+>
+> ```bash
+> az cognitiveservices model list -l spaincentral --query "[?model.name=='Microsoft-Decision-1'].model.skus[].name" -o tsv
+> az cognitiveservices usage list -l spaincentral --query "[?contains(name.value, 'Decision')]" -o table
+> ```
 
 ### 4. Smoke test: send one example and look at the raw response
 
@@ -117,7 +122,36 @@ bash examples/send.sh examples/02-choice.json
 ./examples/send.ps1 examples/02-choice.json
 ```
 
-Check the response shape before you tune thresholds. The client reads `answers.<name>.choice`, `probabilities`, `score` and `noul`, and falls back to `confidence` / `probability`. If a field is named differently, it fails with a clear error instead of guessing. Add `--save` to keep the response in `outputs/`.
+A real response from a `spaincentral` deployment:
+
+```json
+{
+  "model": "microsoft-decision-1",
+  "answers": {
+    "team": {
+      "choice": "engineering",
+      "confidence": 0.9998276440346832,
+      "probabilities": {
+        "billing": 7.484326430889842e-05,
+        "engineering": 0.9998850960231221,
+        "support": 4.0060712569005326e-05
+      },
+      "type": "choice"
+    }
+  },
+  "usage": { "input_tokens": 64, "output_tokens": 1 }
+}
+```
+
+Each question type answers in its own shape:
+
+| Type | Fields in `answers.<name>` |
+| --- | --- |
+| `choice` | `choice`, `probabilities` (per option key), `confidence` |
+| `score` | `score` (probability-weighted level index), `probabilities` and `legend` (per level index), `confidence` |
+| `noul` | `noul` (probability that the statement is true) |
+
+`confidence` is not the top probability: 0.9998 vs 0.99989 above. The routing policy uses the top probability. Add `--save` to keep any response in `outputs/`.
 
 ### 5. Pattern 1: triage FraSoHome tickets
 
@@ -142,6 +176,26 @@ decision-demo guardrails --fail-on-block   # exit code 2 unless the verdict is S
 ```
 
 The [sample draft](data/sample_draft.json) claims stock, says "the cheapest on the market", pushes "last chance" urgency after a return, offers 20% off without conditions, and ends with two calls to action. High-severity rules block at p ≥ 0.5; medium ones go to review at p ≥ 0.7. Edit [`brand_guardrails.csv`](data/brand_guardrails.csv) to change the rules without touching code.
+
+### Results from a real run
+
+All 560 tickets and the brand gate, run on 24 October 2026 against a `DataZoneStandard` deployment in `spaincentral`, 8 requests in parallel from a laptop in Spain:
+
+| Metric | Value |
+| --- | --- |
+| Accuracy vs human `tipo_caso` | **100%** (560 / 560, all 7 queues) |
+| Lowest top probability on the queue choice | 0.998 (no ticket went to human review) |
+| Latency p50 / p95 | 549 / 717 ms per request (client-side, includes network; three questions each) |
+| Wall time, 560 tickets | 77 s |
+| Input tokens / cost | 175,688 tokens → **$0.0074** for the whole run |
+| Errors | 0 |
+| Identical messages (same text and channel) | always the same queue; frustration varied by at most 0.16 on the 0–3 scale |
+| Human priority on those same messages | conflicting in 21 of 32 groups |
+| Brand gate on the sample draft | **BLOCK**: 11 checks, one call, 534 ms, 618 tokens |
+
+The gate flagged the planted violations (stock promise GR-002 0.95, "cheapest" GR-003 1.00, discount without conditions GR-006 0.62, selling after a negative experience GR-010 0.98, urgency GR-005 0.92, two calls to action GR-012 1.00) and cleared the rules the draft does not break (privacy GR-004 0.03, segmentation GR-007 0.25, technical claims GR-009 0.25). A second run moved individual probabilities by up to 0.03 without changing the verdict; see [`outputs/example_guardrails_output.txt`](outputs/example_guardrails_output.txt) and [`outputs/example_triage_report.json`](outputs/example_triage_report.json).
+
+These are synthetic tickets with clear wording, so read 100% as "the plumbing and the option descriptions work", not as a production accuracy figure. No ticket reached the priority queue: the highest frustration score was 1.48, below the policy's threshold of 2.0.
 
 ### 7. Clean up
 

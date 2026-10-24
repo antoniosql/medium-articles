@@ -17,16 +17,16 @@ param location string = resourceGroup().location
 @description('Deployment name. Requests send this value in the "model" field.')
 param deploymentName string = 'frasohome-decision'
 
-@description('GlobalStandard = global capacity. DataZoneStandard = inference stays in the data zone (where available).')
+@description('DataZoneStandard keeps inference in the data zone (the only SKU offered in EU regions at launch). GlobalStandard = global capacity where offered.')
 @allowed([
   'GlobalStandard'
   'DataZoneStandard'
 ])
-param deploymentSku string = 'GlobalStandard'
+param deploymentSku string = 'DataZoneStandard'
 
-@description('Deployment capacity units.')
+@description('Capacity units. 1 unit = 1 request and 1,000 tokens per minute. 500 is the Azure default.')
 @minValue(1)
-param deploymentCapacity int = 1
+param deploymentCapacity int = 500
 
 @description('Object ID of the user or service principal that will call the API. Empty = no role assignment.')
 param callerPrincipalId string = ''

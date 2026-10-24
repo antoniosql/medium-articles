@@ -1,0 +1,34 @@
+{
+  "tickets": 560,
+  "accuracy": 1.0,
+  "median_latency_ms": 549.2290315000901,
+  "p95_latency_ms": 717.3005260001446,
+  "input_tokens": 175688,
+  "cost_usd": 0.007378896000000001,
+  "human_review": 0,
+  "priority": 0,
+  "errors": 0,
+  "confusion": {
+    "cupon": {
+      "cupon": 51
+    },
+    "defecto": {
+      "defecto": 61
+    },
+    "devolucion": {
+      "devolucion": 141
+    },
+    "entrega": {
+      "entrega": 91
+    },
+    "fidelizacion": {
+      "fidelizacion": 43
+    },
+    "info_producto": {
+      "info_producto": 118
+    },
+    "stock_tienda": {
+      "stock_tienda": 55
+    }
+  }
+}

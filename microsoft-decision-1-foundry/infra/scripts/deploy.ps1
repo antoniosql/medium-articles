@@ -5,7 +5,7 @@
 
 .EXAMPLE
   ./infra/scripts/deploy.ps1
-  ./infra/scripts/deploy.ps1 -ResourceGroup rg-demo -Location eastus2 -DeploymentSku DataZoneStandard
+  ./infra/scripts/deploy.ps1 -ResourceGroup rg-demo -Location spaincentral -Capacity 100
 #>
 [CmdletBinding()]
 param(
@@ -13,7 +13,8 @@ param(
     [string]$Location = "swedencentral",           # check model region availability first
     [string]$DeploymentName = "frasohome-decision",
     [ValidateSet("GlobalStandard", "DataZoneStandard")]
-    [string]$DeploymentSku = "GlobalStandard",
+    [string]$DeploymentSku = "DataZoneStandard",   # only SKU offered in EU regions at launch
+    [int]$Capacity = 500,                          # 1 unit = 1 request + 1,000 tokens per minute
     [string]$FoundryName = "",                     # empty = generated from the resource group id
     [string]$CallerPrincipalId = "",               # empty = the signed-in user
     [ValidateSet("User", "ServicePrincipal", "Group")]
@@ -46,6 +47,7 @@ $params = @(
     "--parameters", "location=$Location",
     "--parameters", "deploymentName=$DeploymentName",
     "--parameters", "deploymentSku=$DeploymentSku",
+    "--parameters", "deploymentCapacity=$Capacity",
     "--parameters", "callerPrincipalId=$CallerPrincipalId",
     "--parameters", "callerPrincipalType=$CallerPrincipalType"
 )

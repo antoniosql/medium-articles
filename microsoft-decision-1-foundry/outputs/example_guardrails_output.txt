@@ -1,0 +1,16 @@
+  GR-001 (alta ) p_violation=0.953
+  GR-002 (alta ) p_violation=0.947
+  GR-003 (alta ) p_violation=1.000
+  GR-004 (alta ) p_violation=0.033
+  GR-005 (media) p_violation=0.905
+  GR-006 (alta ) p_violation=0.593
+  GR-007 (alta ) p_violation=0.223
+  GR-008 (media) p_violation=0.986
+  GR-009 (alta ) p_violation=0.202
+  GR-010 (alta ) p_violation=0.982
+  GR-012 (media) p_violation=0.998
+
+Verdict: BLOCK
+  block : [('GR-001', 0.953), ('GR-002', 0.947), ('GR-003', 1.0), ('GR-006', 0.593), ('GR-010', 0.982)]
+  review: [('GR-005', 0.905), ('GR-008', 0.986), ('GR-012', 0.998)]
+11 checks in one call, 650 ms, 618 input tokens

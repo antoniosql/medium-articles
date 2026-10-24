@@ -63,3 +63,27 @@ def test_settings_require_endpoint_and_deployment():
 def test_settings_url():
     settings = Settings(endpoint="https://x.services.ai.azure.com/", deployment="d")
     assert settings.url == "https://x.services.ai.azure.com/providers/microsoft/v1/systemone"
+
+
+def test_entra_token_is_cached_across_requests(fake_api, monkeypatch):
+    """One credential call for many requests, refreshed only near expiry."""
+    import time
+
+    from azure.core.credentials import AccessToken
+
+    class CountingCredential:
+        calls = 0
+
+        def get_token(self, *scopes):
+            CountingCredential.calls += 1
+            return AccessToken(f"token-{CountingCredential.calls}", int(time.time()) + 3600)
+
+    monkeypatch.delenv("AZURE_API_KEY")
+    c = DecisionClient(Settings.from_env(), timeout=5)
+    c._credential = CountingCredential()
+    for _ in range(3):
+        c._auth_headers()
+    assert CountingCredential.calls == 1
+
+    c._token = AccessToken("almost-expired", int(time.time()) + 60)
+    assert c._auth_headers() == {"Authorization": "Bearer token-2"}

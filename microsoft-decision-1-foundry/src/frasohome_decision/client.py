@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import random
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -91,6 +92,8 @@ class DecisionClient:
         self.timeout = timeout
         self.retries = retries
         self._credential = None
+        self._token = None  # cached AccessToken, refreshed 5 minutes before expiry
+        self._token_lock = threading.Lock()
         if not settings.api_key:
             from azure.identity import DefaultAzureCredential
 
@@ -99,7 +102,10 @@ class DecisionClient:
     def _auth_headers(self) -> dict[str, str]:
         if self.settings.api_key:
             return {"api-key": self.settings.api_key}
-        token = self._credential.get_token(TOKEN_SCOPE).token  # type: ignore[union-attr]
+        with self._token_lock:  # one token for all worker threads
+            if self._token is None or self._token.expires_on - time.time() < 300:
+                self._token = self._credential.get_token(TOKEN_SCOPE)  # type: ignore[union-attr]
+            token = self._token.token
         return {"Authorization": f"Bearer {token}"}
 
     def post(self, body: dict[str, Any]) -> Decision:
@@ -132,9 +138,12 @@ class DecisionClient:
                 detail = exc.read().decode("utf-8", "replace")[:500]
                 message = f"HTTP {exc.code} from {self.settings.url}: {detail}"
                 raise DecisionAPIError(message) from exc
-            except urllib.error.URLError as exc:
-                message = f"Could not reach {self.settings.url}: {exc.reason}"
-                raise DecisionAPIError(message) from exc
+            except (urllib.error.URLError, TimeoutError) as exc:  # network error or timeout
+                if attempt < self.retries:
+                    time.sleep(2**attempt + random.random())
+                    continue
+                reason = getattr(exc, "reason", exc)
+                raise DecisionAPIError(f"Could not reach {self.settings.url}: {reason}") from exc
             except json.JSONDecodeError as exc:
                 raise DecisionAPIError("The API returned invalid JSON.") from exc
         raise DecisionAPIError("Retries exhausted.")

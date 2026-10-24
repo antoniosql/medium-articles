@@ -120,7 +120,7 @@ def build_parser() -> argparse.ArgumentParser:
         prog="decision-demo", description=__doc__, formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument("--env-file", default=".env", help="dotenv file to load (default: .env)")
-    parser.add_argument("--timeout", type=float, default=60.0, help="HTTP timeout in seconds")
+    parser.add_argument("--timeout", type=float, default=30.0, help="HTTP timeout in seconds")
     sub = parser.add_subparsers(dest="command", required=True)
 
     send = sub.add_parser("send", help="send one example request from ./examples")

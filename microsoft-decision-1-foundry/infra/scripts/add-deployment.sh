@@ -12,8 +12,8 @@ ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 : "${ACCOUNT_NAME:?Set ACCOUNT_NAME to your Foundry resource name}"
 : "${RESOURCE_GROUP:?Set RESOURCE_GROUP to the resource group of that resource}"
 DEPLOYMENT_NAME="${DEPLOYMENT_NAME:-frasohome-decision}"
-DEPLOYMENT_SKU="${DEPLOYMENT_SKU:-GlobalStandard}"   # or DataZoneStandard where available
-CAPACITY="${CAPACITY:-1}"
+DEPLOYMENT_SKU="${DEPLOYMENT_SKU:-DataZoneStandard}" # GlobalStandard only where offered
+CAPACITY="${CAPACITY:-500}"                          # 1 unit = 1 request + 1,000 tokens per minute
 
 az cognitiveservices account deployment create \
   --name "${ACCOUNT_NAME}" \

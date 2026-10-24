@@ -11,7 +11,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from statistics import median
 
-from frasohome_decision.client import Decision, DecisionClient
+from frasohome_decision.client import Decision, DecisionAPIError, DecisionClient
 from frasohome_decision.policy import (
     DEFAULT_TRIAGE_POLICY,
     HUMAN_REVIEW,
@@ -39,6 +39,7 @@ class TriageReport:
     cost_usd: float
     human_review: int
     priority: int
+    errors: int = 0
     confusion: dict[str, dict[str, int]] = field(default_factory=dict)
 
 
@@ -50,16 +51,33 @@ def run_triage(
 ) -> tuple[TriageReport, list[dict[str, object]]]:
     questions = triage_questions()
 
-    def one(ticket: dict[str, str]) -> tuple[dict[str, str], Decision]:
-        return ticket, client.decide(triage_state(ticket), questions)
+    def one(ticket: dict[str, str]) -> tuple[dict[str, str], Decision | None, str]:
+        try:  # one failed ticket (after retries) is recorded, not fatal for the batch
+            return ticket, client.decide(triage_state(ticket), questions), ""
+        except DecisionAPIError as exc:
+            return ticket, None, str(exc)
 
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
         results = list(pool.map(one, tickets))
 
     rows: list[dict[str, object]] = []
     confusion: dict[str, Counter] = defaultdict(Counter)
-    latencies, tokens, correct, queues = [], 0, 0, Counter()
-    for ticket, decision in results:
+    latencies, tokens, correct, queues, errors = [], 0, 0, Counter(), 0
+    for ticket, decision, error in results:
+        if decision is None:
+            errors += 1
+            rows.append(
+                {
+                    "service_ticket_id": ticket["service_ticket_id"],
+                    "canal": ticket["canal_soporte"],
+                    "tipo_caso_label": ticket["tipo_caso"],
+                    "queue": "error",
+                    "prioridad_label": ticket["prioridad"],
+                    "texto_cliente": ticket["texto_cliente"],
+                    "error": error,
+                }
+            )
+            continue
         predicted = decision.choice("case_type")
         queue = route(decision, policy)
         correct += predicted == ticket["tipo_caso"]
@@ -81,20 +99,22 @@ def run_triage(
                 "queue": queue,
                 "latency_ms": round(decision.latency_ms, 1),
                 "texto_cliente": ticket["texto_cliente"],
+                "error": "",
             }
         )
 
-    n = len(results)
+    n = len(results) - errors  # tickets with a decision
     ordered = sorted(latencies)
     report = TriageReport(
         tickets=n,
         accuracy=correct / n if n else 0.0,
         median_latency_ms=median(ordered) if ordered else 0.0,
-        p95_latency_ms=ordered[min(n - 1, int(0.95 * n))] if ordered else 0.0,
+        p95_latency_ms=ordered[min(len(ordered) - 1, int(0.95 * len(ordered)))] if ordered else 0.0,
         input_tokens=tokens,
         cost_usd=tokens / 1_000_000 * PRICE_PER_MILLION_INPUT_TOKENS,
         human_review=queues["human_review"],
         priority=queues["priority"],
+        errors=errors,
         confusion={label: dict(preds.most_common()) for label, preds in sorted(confusion.items())},
     )
     return report, rows
@@ -104,7 +124,8 @@ def write_outputs(report: TriageReport, rows: list[dict[str, object]], out_dir: 
     out_dir.mkdir(parents=True, exist_ok=True)
     if rows:
         with (out_dir / "triage_decisions.csv").open("w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+            fields = list(dict.fromkeys(k for row in rows for k in row))  # error rows are sparse
+            writer = csv.DictWriter(f, fieldnames=fields)
             writer.writeheader()
             writer.writerows(rows)
     (out_dir / "triage_report.json").write_text(
@@ -121,6 +142,7 @@ def format_report(report: TriageReport, policy: TriagePolicy) -> str:
         f"Input tokens          : {report.input_tokens:,}  ->  ${report.cost_usd:.6f}",
         f"Human review          : {report.human_review} (top p < {policy.min_confidence})",
         f"Priority queue        : {report.priority}",
+        f"Errors                : {report.errors} (after retries; see the error column)",
         "",
         "Confusion (label -> predictions):",
     ]

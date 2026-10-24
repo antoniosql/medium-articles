@@ -4,7 +4,7 @@
 #
 # Usage (from the project root):
 #   bash infra/scripts/deploy.sh
-#   RESOURCE_GROUP=rg-demo LOCATION=eastus2 DEPLOYMENT_SKU=DataZoneStandard bash infra/scripts/deploy.sh
+#   RESOURCE_GROUP=rg-demo LOCATION=spaincentral CAPACITY=100 bash infra/scripts/deploy.sh
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -13,7 +13,8 @@ ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 RESOURCE_GROUP="${RESOURCE_GROUP:-rg-frasohome-decision}"
 LOCATION="${LOCATION:-swedencentral}"          # check model region availability first
 DEPLOYMENT_NAME="${DEPLOYMENT_NAME:-frasohome-decision}"
-DEPLOYMENT_SKU="${DEPLOYMENT_SKU:-GlobalStandard}"
+DEPLOYMENT_SKU="${DEPLOYMENT_SKU:-DataZoneStandard}"  # only SKU offered in EU regions at launch
+CAPACITY="${CAPACITY:-500}"                        # 1 unit = 1 request + 1,000 tokens per minute
 FOUNDRY_NAME="${FOUNDRY_NAME:-}"                # empty = generated from the resource group id
 CALLER_PRINCIPAL_ID="${CALLER_PRINCIPAL_ID:-}"  # empty = the signed-in user
 CALLER_PRINCIPAL_TYPE="${CALLER_PRINCIPAL_TYPE:-User}"
@@ -38,6 +39,7 @@ PARAMS=(
   --parameters location="${LOCATION}"
   --parameters deploymentName="${DEPLOYMENT_NAME}"
   --parameters deploymentSku="${DEPLOYMENT_SKU}"
+  --parameters deploymentCapacity="${CAPACITY}"
   --parameters callerPrincipalId="${CALLER_PRINCIPAL_ID}"
   --parameters callerPrincipalType="${CALLER_PRINCIPAL_TYPE}"
 )

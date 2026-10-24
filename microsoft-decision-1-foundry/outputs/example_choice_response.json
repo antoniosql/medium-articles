@@ -1,0 +1,19 @@
+{
+  "model": "microsoft-decision-1",
+  "answers": {
+    "team": {
+      "choice": "engineering",
+      "confidence": 0.9998276440346832,
+      "probabilities": {
+        "billing": 7.484326430889842e-05,
+        "engineering": 0.9998850960231221,
+        "support": 4.0060712569005326e-05
+      },
+      "type": "choice"
+    }
+  },
+  "usage": {
+    "input_tokens": 64,
+    "output_tokens": 1
+  }
+}

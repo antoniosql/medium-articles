@@ -60,3 +60,19 @@ def test_api_errors_exit_cleanly(fake_api, capsys):
     fake_api.fail_next = [403]
     assert main([*NO_ENV, "send", "examples/01-noul.json"]) == 1
     assert "HTTP 403" in capsys.readouterr().err
+
+
+def test_triage_records_failed_tickets_and_keeps_going(fake_api, tmp_path):
+    from frasohome_decision.client import DecisionClient
+    from frasohome_decision.config import Settings
+    from frasohome_decision.data import load_tickets
+    from frasohome_decision.triage import run_triage, write_outputs
+
+    fake_api.fail_next = [400]  # not retryable: the first ticket fails, the rest succeed
+    client = DecisionClient(Settings.from_env(), timeout=5, retries=0)
+    report, rows = run_triage(client, load_tickets()[:4], workers=1)
+    assert report.errors == 1
+    assert report.tickets == 3
+    assert [r["queue"] for r in rows].count("error") == 1
+    write_outputs(report, rows, tmp_path)
+    assert "error" in (tmp_path / "triage_decisions.csv").read_text("utf-8").splitlines()[0]

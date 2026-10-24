@@ -12,8 +12,8 @@ param(
     [Parameter(Mandatory)] [string]$ResourceGroup,
     [string]$DeploymentName = "frasohome-decision",
     [ValidateSet("GlobalStandard", "DataZoneStandard")]
-    [string]$DeploymentSku = "GlobalStandard",
-    [int]$Capacity = 1
+    [string]$DeploymentSku = "DataZoneStandard",
+    [int]$Capacity = 500
 )
 
 $ErrorActionPreference = "Stop"
