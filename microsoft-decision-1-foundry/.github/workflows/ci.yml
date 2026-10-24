@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Lint
+        run: python -m ruff check src tests
+
+      - name: Run tests (offline, against a local fake of the decision API)
+        run: python -m pytest -q
+
+      - name: Reproduce the label audit from the article
+        run: decision-demo audit-labels
+
+      - name: Print the exact requests (no endpoint needed)
+        run: |
+          decision-demo triage --dry-run --limit 5
+          decision-demo guardrails --dry-run
+
+      - name: Build Bicep template
+        run: az bicep build --file infra/main.bicep --stdout > /dev/null
+
+      - name: Lint shell scripts
+        run: shellcheck infra/scripts/*.sh examples/send.sh

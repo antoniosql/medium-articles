@@ -1,0 +1,13 @@
+﻿regla_id,categoria_regla,descripcion_regla,aplica_a_canal,severidad
+GR-001,tono,"Mantener un tono cercano, claro y premium; evitar lenguaje agresivo o sensacionalista.",all,alta
+GR-002,promesa,No prometer disponibilidad de stock sin validación en tiempo real.,all,alta
+GR-003,precio,No usar claims absolutos de precio como “el más barato” o “mejor precio garantizado”.,all,alta
+GR-004,privacidad,No mencionar atributos personales sensibles ni inferencias explícitas del cliente.,all,alta
+GR-005,urgencia,Usar urgencia moderada; evitar FOMO excesivo especialmente en post-devolución.,"email,push,sms",media
+GR-006,descuento,"Si hay promoción, especificar condiciones de forma legible y consistente.","email,sms,web",alta
+GR-007,segmentacion,"Personalizar por categoría, contexto y afinidad; no por rasgos íntimos o sensibles.",all,alta
+GR-008,marca,Priorizar inspiración para el hogar y utilidad real por encima del descuento puro.,all,media
+GR-009,legal,No afirmar propiedades técnicas o materiales no presentes en catálogo.,all,alta
+GR-010,soporte,"En experiencias negativas, priorizar empatía y resolución antes que venta agresiva.","email,chat,web",alta
+GR-011,tienda_local,"En campañas locales, mencionar tienda solo si el cliente es capturable localmente.","sms,push",media
+GR-012,consistencia,Mantener CTA único y claro; evitar múltiples llamadas a la acción en el mismo mensaje.,all,media

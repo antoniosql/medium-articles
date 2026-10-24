@@ -1,0 +1,40 @@
+{
+  "model": "<deployment-name>",
+  "state": {
+    "canal": "WhatsApp",
+    "mensaje": "Tengo una incidencia con la entrega de Sofá Boreal Compact; no coincide con la fecha que aparecía al comprar."
+  },
+  "questions": {
+    "case_type": {
+      "type": "choice",
+      "instructions": "FraSoHome is a home furniture and decor retailer. Which support queue should handle this customer message? Pick the primary problem.",
+      "criteria": {
+        "devolucion": "Return or refund of an item already purchased: return status, refund not received, return paperwork",
+        "info_producto": "Pre-purchase product question: dimensions, materials, fit in the customer's space, alternatives",
+        "entrega": "Delivery of an order: late, in transit, tracking, delivery date mismatch",
+        "defecto": "Product arrived damaged, defective, with missing parts or a finishing problem",
+        "stock_tienda": "Stock availability of a product in a physical store or unclear availability on the website",
+        "cupon": "Promo code, coupon or campaign discount that fails or was not applied",
+        "fidelizacion": "Loyalty programme: points, tier, club benefits not showing"
+      }
+    },
+    "frustration": {
+      "type": "score",
+      "instructions": "How frustrated does the customer sound in this message?",
+      "criteria": [
+        "Calm",
+        "Mildly annoyed",
+        "Frustrated",
+        "Angry"
+      ]
+    },
+    "is_blocked": {
+      "type": "noul",
+      "instructions": "Is the customer currently unable to use a product or complete a purchase until FraSoHome acts?",
+      "criteria": {
+        "true": "Something is broken, missing, late or blocking a purchase right now",
+        "false": "An informational question or a status check with no blocker"
+      }
+    }
+  }
+}

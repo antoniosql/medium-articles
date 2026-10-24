@@ -1,0 +1,15 @@
+{
+  "model": "<deployment-name>",
+  "state": "The API returns 500 on every call.",
+  "questions": {
+    "team": {
+      "type": "choice",
+      "instructions": "Which team should handle this ticket?",
+      "criteria": {
+        "billing": "Charges, invoices, and refunds",
+        "engineering": "Bugs, errors, and outages",
+        "support": "How-to and account questions"
+      }
+    }
+  }
+}

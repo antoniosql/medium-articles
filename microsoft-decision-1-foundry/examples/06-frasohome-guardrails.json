@@ -1,0 +1,54 @@
+{
+  "model": "<deployment-name>",
+  "state": {
+    "canal": "email",
+    "contexto": "Customer returned a sofa last week (post-return journey).",
+    "borrador": "¡Última oportunidad! El Sofá Atlas XL vuelve a estar disponible en tu tienda de A Coruña y es el más barato del mercado. Compra hoy con un 20% de descuento antes de que se agote. Descubre también nuestra colección de cojines y suscríbete a la newsletter."
+  },
+  "questions": {
+    "GR-001": {
+      "type": "noul",
+      "instructions": "Does this marketing draft VIOLATE the following FraSoHome brand rule? Rule: Mantener un tono cercano, claro y premium; evitar lenguaje agresivo o sensacionalista."
+    },
+    "GR-002": {
+      "type": "noul",
+      "instructions": "Does this marketing draft VIOLATE the following FraSoHome brand rule? Rule: No prometer disponibilidad de stock sin validación en tiempo real."
+    },
+    "GR-003": {
+      "type": "noul",
+      "instructions": "Does this marketing draft VIOLATE the following FraSoHome brand rule? Rule: No usar claims absolutos de precio como “el más barato” o “mejor precio garantizado”."
+    },
+    "GR-004": {
+      "type": "noul",
+      "instructions": "Does this marketing draft VIOLATE the following FraSoHome brand rule? Rule: No mencionar atributos personales sensibles ni inferencias explícitas del cliente."
+    },
+    "GR-005": {
+      "type": "noul",
+      "instructions": "Does this marketing draft VIOLATE the following FraSoHome brand rule? Rule: Usar urgencia moderada; evitar FOMO excesivo especialmente en post-devolución."
+    },
+    "GR-006": {
+      "type": "noul",
+      "instructions": "Does this marketing draft VIOLATE the following FraSoHome brand rule? Rule: Si hay promoción, especificar condiciones de forma legible y consistente."
+    },
+    "GR-007": {
+      "type": "noul",
+      "instructions": "Does this marketing draft VIOLATE the following FraSoHome brand rule? Rule: Personalizar por categoría, contexto y afinidad; no por rasgos íntimos o sensibles."
+    },
+    "GR-008": {
+      "type": "noul",
+      "instructions": "Does this marketing draft VIOLATE the following FraSoHome brand rule? Rule: Priorizar inspiración para el hogar y utilidad real por encima del descuento puro."
+    },
+    "GR-009": {
+      "type": "noul",
+      "instructions": "Does this marketing draft VIOLATE the following FraSoHome brand rule? Rule: No afirmar propiedades técnicas o materiales no presentes en catálogo."
+    },
+    "GR-010": {
+      "type": "noul",
+      "instructions": "Does this marketing draft VIOLATE the following FraSoHome brand rule? Rule: En experiencias negativas, priorizar empatía y resolución antes que venta agresiva."
+    },
+    "GR-012": {
+      "type": "noul",
+      "instructions": "Does this marketing draft VIOLATE the following FraSoHome brand rule? Rule: Mantener CTA único y claro; evitar múltiples llamadas a la acción en el mismo mensaje."
+    }
+  }
+}

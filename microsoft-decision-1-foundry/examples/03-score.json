@@ -1,0 +1,16 @@
+{
+  "model": "<deployment-name>",
+  "state": "Checkout is down for all EU customers since 09:00.",
+  "questions": {
+    "severity": {
+      "type": "score",
+      "instructions": "How severe is this incident?",
+      "criteria": [
+        "Cosmetic",
+        "Minor",
+        "Major",
+        "Critical"
+      ]
+    }
+  }
+}

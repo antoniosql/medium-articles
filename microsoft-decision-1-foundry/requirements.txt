@@ -1,0 +1,2 @@
+# Convenience installer. The canonical dependency declaration is pyproject.toml.
+-e .

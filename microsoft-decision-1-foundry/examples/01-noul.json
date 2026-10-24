@@ -1,0 +1,14 @@
+{
+  "model": "<deployment-name>",
+  "state": "I refunded your $200. You don't need to contact billing.",
+  "questions": {
+    "promises_refund": {
+      "type": "noul",
+      "instructions": "Does this reply promise the customer a refund?",
+      "criteria": {
+        "true": "Commits to returning money",
+        "false": "Makes no commitment about money"
+      }
+    }
+  }
+}
